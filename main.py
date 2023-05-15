@@ -2,15 +2,11 @@ import pandas as pd
 import numpy as np
 
 
-# Panda Config to Print all the data into the console, comment out to get summary of data.
-# pd.set_option('display.width', 500)
-# pd.set_option('display.max_columns', 130)
-# pd.set_option('display.max_rows', 745)
-
-
 def main():
     csv_file = 'S2122-laliga-santander.csv'
-    print_santander(csv_file)
+    position = 'Forward'
+    # print_santander(csv_file)
+    print_santander_by_position(csv_file, position)
 
 
 def print_santander(csv_file):
@@ -18,7 +14,7 @@ def print_santander(csv_file):
     try:
         data = pd.read_csv(csv_file, header=0,
                            usecols=['competition', 'name', 'team', 'position', 'weight', 'height', 'country',
-                                    'position', 'aerial_duels',
+                                    'aerial_duels',
                                     'aerial_duels_lost', 'aerial_duels_won', 'appearances', 'assists_intentional',
                                     'attempts_from_set_pieces',
                                     'away_goals', 'backward_passes', 'blocked_shots', 'blocks', 'catches',
@@ -70,11 +66,57 @@ def print_santander(csv_file):
         else:
             print(data)
     except FileNotFoundError:
-        print("ERROR: CSV file '{csv_file}' not found.")
+        print(f"ERROR: CSV file '{csv_file}' not found.")
     except pd.errors.EmptyDataError:
-        print("ERROR: CSV file '{csv_file}' is empty.")
+        print(f"ERROR: CSV file '{csv_file}' is empty.")
     except pd.errors.ParserError:
-        print("ERROR: Unable to parse CSV file '{csv_file}'.")
+        print(f"ERROR: Unable to parse CSV file '{csv_file}'.")
+
+
+def print_santander_by_position(csv_file, position):
+    pd.set_option('display.width', 5000)
+    pd.set_option('display.max_columns', 100)
+    pd.set_option('display.max_rows', 200)
+
+    try:
+        data = pd.read_csv(csv_file, header=0,
+                           usecols=['competition', 'name', 'team', 'position', 'weight', 'height', 'country',
+                                    'position', 'aerial_duels', 'aerial_duels_lost', 'aerial_duels_won',
+                                    'appearances', 'assists_intentional', 'attempts_from_set_pieces',
+                                    'away_goals', 'backward_passes', 'blocked_shots', 'blocks', 'catches',
+                                    'forward_passes', 'foul_attempted_tackle', 'foul_won_penalty', 'games_played',
+                                    'goal_assists', 'goalkeeper_smother', 'goals', 'goals_from_inside_box',
+                                    'goals_from_outside_box', 'headed_goals', 'hit_woodwork', 'home_goals',
+                                    'index', 'interceptions', 'key_passes_attempt_assists', 'left_foot_goals',
+                                    'leftside_passes', 'offsides', 'open_play_passes', 'other_goals', 'own_goal_scored',
+                                    'penalties_off_target', 'penalties_taken', 'penalty_goals',
+                                    'penalty_goals_conceded',
+                                    'recoveries', 'red_cards_2nd_yellow', 'right_foot_goals', 'rightside_passes',
+                                    'second_goal_assists', 'set_pieces_goals', 'shots_off_target_inc_woodwork',
+                                    'shots_on_target_inc_goals', 'starts', 'straight_red_cards', 'substitute_off',
+                                    'substitute_on', 'team_games_played', 'through_balls',
+                                    'throw_ins_to_opposition_player',
+                                    'throw_ins_to_own_player', 'time_played', 'times_tackled', 'total_clearances',
+                                    'total_fouls_conceded', 'total_fouls_won', 'total_losses_of_possession',
+                                    'total_passes', 'total_red_cards', 'total_shots',
+                                    'total_successful_passes_excl_crosses_corners', 'total_tackles',
+                                    'total_touches_in_opposition_box', 'winning_goal', 'yellow_cards'])
+        if data.empty:
+            print("ERROR: CSV file is empty.")
+        else:
+            # Group the rows by the position column
+            position_groups = data.groupby('position')
+            # Iterate over each unique position and create a new DataFrame for it
+            for pos, group in position_groups:
+                if pos == position:
+                    print(f"--- {pos} ---")
+                    print(group)
+    except FileNotFoundError:
+        print(f"ERROR: CSV file '{csv_file}' not found.")
+    except pd.errors.EmptyDataError:
+        print(f"ERROR: CSV file '{csv_file}' is empty.")
+    except pd.errors.ParserError:
+        print(f"ERROR: Unable to parse CSV file '{csv_file}'.")
 
 
 if __name__ == '__main__':
