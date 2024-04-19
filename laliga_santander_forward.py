@@ -1,10 +1,10 @@
 import pandas as pd
 
 
-def print_santander_forward(csv_file):
-    pd.set_option('display.width', 5000)
+def save_santander_forward(csv_file, output_file):
+    pd.set_option('display.width', 10)
     pd.set_option('display.max_columns', 100)
-    pd.set_option('display.max_rows', 200)
+   # pd.set_option('display.max_rows', 200)
 
     try:
         data = pd.read_csv(csv_file, header=0,
@@ -34,7 +34,10 @@ def print_santander_forward(csv_file):
         else:
             # Print only the rows where the position is "Forward"
             forwards = data[data['position'] == 'Forward']
-            print(forwards.to_string(index=False))
+            # Write filtered data to a new csv file
+            forwards.to_csv(output_file, index=False)
+            print(f"Filtered data saved to '{output_file}' successfully.")
+
     except FileNotFoundError:
         print(f"ERROR: CSV file '{csv_file}' not found.")
     except pd.errors.EmptyDataError:
